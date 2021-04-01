@@ -11,7 +11,7 @@ body {
 }
 
 #main {
-  margin: 200px auto;
+  margin: 10px auto;
   width: 360px;
   height: 420px;
   border: 10px solid #000;
@@ -23,8 +23,8 @@ body {
   align-items: center;
   #stage {
     border: 2px solid #000;
-    width: 304px;
-    height: 304px;
+    width: 64px;
+    height: 64px;
     position: relative;
     #snake {
       & > div {
@@ -33,12 +33,13 @@ body {
         border: 1px solid @bg-color;
         background-color: #000;
         position: absolute;
+        // z-index: 2;
       }
     }
     #food {
       position: absolute;
-      left: 220px;
-      top: 80px;
+      left: 0;
+      top: 0;
       width: 10px;
       height: 10px;
       display: flex;
@@ -46,6 +47,7 @@ body {
       flex-wrap: wrap;
       justify-content: space-between;
       align-content: space-between;
+      transform: scale(0.8);
       & > div {
         width: 4px;
         height: 4px;

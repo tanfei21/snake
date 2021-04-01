@@ -4,54 +4,61 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const webpack = require('webpack');
 
 module.exports = {
-  optimization: {
-    minimize: false // 关闭代码压缩
-  },
-
+  // 入口文件
   entry: './src/index.ts',
 
-  devtool: 'inline-source-map',
+  // 打包目录
+  output: {
+    path: path.resolve(__dirname, 'dist'), // 打包文件目录
+    filename: 'bundle.js', // 打包文件名称
+    environment: {
+      arrowFunction: false, // 关闭箭头函数
+      const: false // 不使用const
+    }
+  },
 
+  // optimization: {
+  //   minimize: false // 关闭代码压缩
+  // },
+
+  // 热更新
+  devtool: 'inline-source-map',
   devServer: {
     contentBase: './dist',
     hot: true
   },
 
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
-    environment: {
-      arrowFunction: false, // 关闭箭头函数
-      const: false
-    }
-  },
 
   module: {
     rules: [
+      // 处理 typescript
       {
         test: /\.ts$/,
         use: [
+          // 配置 babel 兼容低版本浏览器
           {
             loader: 'babel-loader',
             options: {
               presets: [
                 [
-                  '@babel/preset-env',
+                  '@babel/preset-env', // 指定环境插件
                   {
-                    targets: '> 0.25%, not dead',
-                    corejs: '3',
-                    useBuiltIns: 'usage'
+                    targets: '> 0.25%, not dead', // 浏览器兼容版本
+                    corejs: '3', // corejs 版本
+                    useBuiltIns: 'usage' // 按需加载
                   }
                 ]
               ]
             }
           },
+          // 配置 typescript 转为 JavaScript
           {
             loader: 'ts-loader'
           }
         ],
-        exclude: /node_modules/
+        exclude: /node_modules/ // 不需要处理文件
       },
+      // 处理 less
       {
         test: /\.less$/,
         use: [
@@ -83,9 +90,11 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.html'
     }),
+    // 热更新
     new webpack.HotModuleReplacementPlugin()
   ],
 
+  // 设置引用模块
   resolve: {
     extensions: ['.ts', '.js']
   }

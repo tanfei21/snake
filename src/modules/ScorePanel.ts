@@ -29,6 +29,14 @@ class ScorePanel {
       this.levelEle.innerHTML = ++this.level + '';
     }
   }
+
+  // 游戏初始化
+  init() {
+    this.score = 0;
+    this.level = 1;
+    this.scoreEle.innerHTML = this.score + '';
+    this.levelEle.innerHTML = this.level + '';
+  }
 }
 
 export default ScorePanel;

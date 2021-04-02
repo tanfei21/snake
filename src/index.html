@@ -11,6 +11,11 @@
     <div id="main">
       <!-- 游戏舞台 -->
       <div id="stage">
+        <!-- 游戏设置 -->
+        <div id="setting">
+          <div id="set-title">贪吃蛇</div>
+          <div id="start">开始游戏</div>
+        </div>
         <!-- 蛇 -->
         <div id="snake">
           <!-- 第一个 div 代表蛇头 -->
@@ -27,12 +32,15 @@
       </div>
       <!-- 记分牌 -->
       <div id="score-panel">
-        <div>
-          SCORE: <span id="score">0</span>
-        </div>
-        <div>
-          Level: <span id="level">1</span>
-        </div>
+        <div>SCORE: <span id="score">0</span></div>
+        <div>Level: <span id="level">1</span></div>
+      </div>
+      <!-- 按键区 -->
+      <div id="button-wrap">
+        <div id="up" data-direction="Up"></div>
+        <div id="down" data-direction="Down"></div>
+        <div id="left" data-direction="Left"></div>
+        <div id="right" data-direction="Right"></div>
       </div>
     </div>
   </body>

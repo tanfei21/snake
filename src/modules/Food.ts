@@ -27,11 +27,18 @@ class Food {
     return this.foodEle.offsetTop;
   }
 
+  // 游戏初始化
+  init() {
+    this.changeLocation();
+  }
+
+  // 游戏结束, 食物隐藏
+  over() {
+    this.foodEle.style.display = 'none';
+  }
+
   // 修改食物的位置
   changeLocation(): void {
-
-    
-
     // 默认食物为正方形
     // 食物出现的最大位置: 舞台最大宽度/高度 - 食物大小
     const foodWidth = this.foodEle.clientWidth;
@@ -44,17 +51,6 @@ class Food {
 
     this.foodEle.style.left = left + 'px';
     this.foodEle.style.top = top + 'px';
-
-    // 食物位置不能出现在蛇身体内部
-    for (let i = 0; i < this.bodiesEle.length; i++) {
-      const bodyEle = this.bodiesEle[i] as HTMLElement;
-      console.log(this.X);
-      
-      if (this.X === bodyEle.offsetLeft && this.Y === bodyEle.offsetTop) {
-        // 出现在内部
-        this.changeLocation()
-      }
-    }
   }
 }
 

@@ -7,6 +7,8 @@ class Snake {
   bodiesEle: HTMLCollection;
   // 舞台
   stageEle: HTMLElement;
+  // 食物
+  foodEle: HTMLElement;
 
   constructor() {
     // 获取页面蛇元素
@@ -17,6 +19,8 @@ class Snake {
     this.bodiesEle = this.snakeEle.getElementsByTagName('div');
     // 获取页面舞台元素
     this.stageEle = document.getElementById('stage')!;
+    // 获取页面舞台元素
+    this.foodEle = document.getElementById('food')!;
   }
 
   // 获取蛇头 X 轴坐标
@@ -79,6 +83,18 @@ class Snake {
     this.move('Y', value);
   }
 
+  // 游戏初始化
+  init() {
+    this.snakeEle.innerHTML = '<div></div>';
+    this.headEle = document.querySelector('#snake > div')!;
+    this.changeLocation();
+  }
+
+  // 游戏结束, 蛇隐藏
+  over() {
+    this.snakeEle.style.display = 'none';
+  }
+
   // 吃到食物, 增加身体长度
   addBody() {
     const body = document.createElement('div');
@@ -91,7 +107,7 @@ class Snake {
     const maxScope = this.stageEle.clientWidth - this.headEle.clientWidth;
     if (value < 0 || value > maxScope) {
       // 进入判断说明蛇撞墙了
-      // throw new Error('游戏结束! Game Over!');
+      throw new Error('游戏结束! Game Over!');
     }
 
     // 移动身体, 从后至前, 后面的身体位置替换掉前面身体的位置
@@ -122,9 +138,25 @@ class Snake {
     for (let i = 1; i < this.bodiesEle.length; i++) {
       const bodyEle = this.bodiesEle[i] as HTMLElement;
       if (this.X === bodyEle.offsetLeft && this.Y === bodyEle.offsetTop) {
-        // throw new Error('游戏结束! Game Over!');
+        throw new Error('游戏结束! Game Over!');
       }
     }
+  }
+
+  // 修改食物的位置
+  changeLocation(): void {
+    // 默认食物为正方形
+    // 食物出现的最大位置: 舞台最大宽度/高度 - 食物大小
+    const foodWidth = this.foodEle.clientWidth;
+    const maxWidth = (this.stageEle.clientWidth - foodWidth) / foodWidth;
+    const maxHeight = (this.stageEle.clientHeight - foodWidth) / foodWidth;
+
+    // 每次移动的位置必须是食物大小的整数倍
+    const left = Math.round(Math.random() * maxWidth) * foodWidth;
+    const top = Math.round(Math.random() * maxHeight) * foodWidth;
+
+    this.headEle.style.left = left + 'px';
+    this.headEle.style.top = top + 'px';
   }
 }
 

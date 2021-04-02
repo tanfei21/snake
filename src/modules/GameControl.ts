@@ -3,6 +3,9 @@ import Food from './Food';
 import ScorePanel from './ScorePanel';
 
 class GameControl {
+  settingEle: HTMLElement;
+  startEle: HTMLElement;
+  setTitLEle: HTMLElement;
   snake: Snake;
   food: Food;
   scorePanel: ScorePanel;
@@ -10,17 +13,40 @@ class GameControl {
   isLive: boolean = true; // 游戏状态
 
   constructor() {
+    this.settingEle = document.getElementById('setting')!;
+    this.startEle = document.getElementById('start')!;
+    this.setTitLEle = document.getElementById('set-title')!;
     this.snake = new Snake();
     this.food = new Food();
     this.scorePanel = new ScorePanel();
-
-    this.init();
   }
 
   // 初始化
   init() {
-    // 监听按键按下
+    console.log('初始化');
+    this.snake.init();
+    this.scorePanel.init();
+    this.food.init();
+    this.direction = 'Right';
+    this.isLive = true;
+    // 按键按下
     document.addEventListener('keydown', this.keydownHandler.bind(this));
+    (document.getElementById('up') as HTMLElement).addEventListener(
+      'click',
+      this.clickHandler.bind(this)
+    );
+    (document.getElementById('down') as HTMLElement).addEventListener(
+      'click',
+      this.clickHandler.bind(this)
+    );
+    (document.getElementById('left') as HTMLElement).addEventListener(
+      'click',
+      this.clickHandler.bind(this)
+    );
+    (document.getElementById('right') as HTMLElement).addEventListener(
+      'click',
+      this.clickHandler.bind(this)
+    );
     // 调用run方法, 使蛇移动
     this.run();
   }
@@ -30,12 +56,16 @@ class GameControl {
     this.direction = event.key;
   }
 
+  clickHandler(event: Event) {
+    console.log(event);
+    this.direction = (event?.target as HTMLElement)?.dataset?.direction!;
+  }
+
   // 蛇动起来
   run() {
     // 获取蛇现在坐标
     let X = this.snake.X;
     let Y = this.snake.Y;
-
 
     // 根据按键方向来修改X值和Y值
     switch (this.direction) {
@@ -78,24 +108,53 @@ class GameControl {
       this.snake.Y = Y;
     } catch (e) {
       // 进入到catch，说明出现了异常，游戏结束，弹出一个提示信息
-      alert(e.message);
-      // 将isLive设置为false
-      this.isLive = false;
+      this.over()
     }
 
     // 开启一个定时调用
-    this.isLive && setTimeout(this.run.bind(this), 300 -(this.scorePanel.level-1)*30);
+    this.isLive &&
+      setTimeout(this.run.bind(this), 300 - (this.scorePanel.level - 1) * 30);
+  }
+
+  // 游戏结束
+  over() {
+    // 将isLive设置为false
+    this.isLive = false;
+    this.snake.over();
+    this.food.over();
+    this.settingEle.style.display = 'flex';
+    this.startEle.innerHTML = '重新开始';
+    this.setTitLEle.innerHTML = 'Game Over!';
   }
 
   // 是否吃到食物
   checkEat(X: number, Y: number): void {
     if (X === this.food.X && Y === this.food.Y) {
+      console.log('吃到了');
       // 食物位置重置
       this.food.changeLocation();
       // 分数增加
       this.scorePanel.addScore();
       // 蛇身体增加一节
       this.snake.addBody();
+      return;
+    }
+
+    // 食物出现在身体内部, 自动增长身体
+    const snakeBodies = this.snake.bodiesEle;
+    for (let i = 0; i < snakeBodies.length; i++) {
+      if (
+        (snakeBodies[i] as HTMLElement).offsetLeft === this.food.X &&
+        (snakeBodies[i] as HTMLElement).offsetTop === this.food.Y
+      ) {
+        // 食物位置重置
+        this.food.changeLocation();
+        // 分数增加
+        this.scorePanel.addScore();
+        // 蛇身体增加一节
+        this.snake.addBody();
+        return;
+      }
     }
   }
 }
